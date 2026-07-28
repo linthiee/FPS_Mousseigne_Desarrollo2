@@ -1,0 +1,118 @@
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+# Unity 3D Assets
+*.3df
+*.3g2
+*.3gp
+*.aa
+*.aac
+*.abc
+*.ac
+*.aif
+*.aiff
+*.anim
+*.apk
+*.apng
+*.asf
+*.asset
+*.avi
+*.bin
+*.bmp
+*.bndl
+*.bundle
+*.cab
+*.caf
+*.cginc
+*.cnum
+*.col
+*.compute
+*.cubemap
+*.db
+*.dds
+*.dll
+*.dmg
+*.dnd
+*.doc
+*.docx
+*.dot
+*.exr
+*.f4v
+*.fbx
+*.flac
+*.flv
+*.gltf
+*.gnum
+*.gradient
+*.hnum
+*.iart
+*.ico
+*.iff
+*.image
+*.ipa
+*.jnum
+*.jpeg
+*.jpg
+*.keep
+*.lnum
+*.m4a
+*.m4v
+*.mask
+*.mat
+*.max
+*.mb
+*.mnum
+*.mov
+*.mp3
+*.mp4
+*.mpeg
+*.mpg
+*.msi
+*.mws
+*.obj
+*.ogg
+*.ogv
+*.overrideController
+*.p12
+*.pfx
+*.physicMaterial
+*.physicsMaterial2D
+*.playable
+*.png
+*.pnum
+*.ppt
+*.pptx
+*.psd
+*.rnum
+*.snum
+*.so
+*.sound
+*.spriteatlas
+*.substance
+*.svg
+*.swf
+*.tar
+*.tga
+*.tif
+*.tiff
+*.ttf
+*.tx
+*.unreal
+*.vnum
+*.vob
+*.wav
+*.webm
+*.wma
+*.wmv
+*.xart
+*.xls
+*.xlsx
+*.zip
+
+# Unity YAML (Optional LFS - track if files grow massive)
+# *.unity filter=lfs diff=lfs merge=lfs -text
+# *.prefab filter=lfs diff=lfs merge=lfs -text
+# Git LFS Lockable files (Prevents merge conflicts on binary assets)
+*.asset lockable
+*.mat lockable
+*.prefab lockable
+*.unity lockable
+*.fbx filter=lfs diff=lfs merge=lfs -text
