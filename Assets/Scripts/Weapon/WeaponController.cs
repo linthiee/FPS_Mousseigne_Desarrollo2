@@ -8,9 +8,12 @@ public class WeaponController : MonoBehaviour
     private IEventBus _eventBus;
     private RaycastHit hit;
 
-   private int maxBullets = 17;
-   private int currentBullets;
-    
+    private int maxBullets = 17;
+    private int currentBullets;
+
+    private bool canShoot = false;
+    private bool wantsToShoot = false;
+
     void Awake()
     {
         _eventBus = ServiceLocator.GetService<IEventBus>();
@@ -22,6 +25,29 @@ public class WeaponController : MonoBehaviour
     void Start()
     {
         currentBullets = maxBullets;
+    }
+
+    void FixedUpdate()
+    {
+        Debug.DrawLine(playerCamera.transform.position, playerCamera.transform.position + playerCamera.transform.forward * 10f, Color.red);
+        
+        if (canShoot && wantsToShoot)
+        {
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit,
+                    Mathf.Infinity, LayerMask.GetMask("Wall")))
+            {
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance,
+                    Color.yellow);
+                Debug.Log("Wall!");
+            }
+            else
+            {
+                Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * 1000f, Color.tomato,
+                    2.0f, false);
+            }
+
+            wantsToShoot = false;
+        }
     }
 
     // Update is called once per frame
@@ -40,11 +66,14 @@ public class WeaponController : MonoBehaviour
         if (currentBullets > 0)
         {
             Debug.Log(currentBullets);
-            
-            Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, playerCamera.farClipPlane);
             currentBullets--;
-
-            Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * 1000f, Color.tomato, 2.0f, false);
+            canShoot = true;
+            wantsToShoot = true;
+        }
+        else
+        {
+            canShoot = false;
+            wantsToShoot = true;
         }
     }
 
