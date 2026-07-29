@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
     
     public void Awake()
     {
-        _eventBus = ServiceLoader.GetService<IEventBus>();
+        _eventBus = ServiceLocator.GetService<IEventBus>();
     }
 
     public void Start()

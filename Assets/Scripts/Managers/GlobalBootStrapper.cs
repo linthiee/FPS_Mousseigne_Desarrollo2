@@ -5,10 +5,10 @@ public static class GlobalBootstrapper
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void InitializeServices()
     {
-        ServiceLoader.ClearServices();
+        ServiceLocator.ClearServices();
 
         IEventBus globalEventBus = new EventBus();
-        ServiceLoader.AddService<IEventBus>(globalEventBus);
+        ServiceLocator.AddService<IEventBus>(globalEventBus);
 
         //AudioSettingsSO audioSettings = Resources.Load<AudioSettingsSO>("AudioSettings");
 
