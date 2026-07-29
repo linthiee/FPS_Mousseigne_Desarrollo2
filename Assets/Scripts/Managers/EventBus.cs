@@ -1,7 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-public struct PlayerRechargeEvent{}
+public struct PlayerRechargeEvent
+{
+}
+
+public struct PlayerShootEvent
+{
+}
 
 public interface IEventBus
 {
@@ -13,6 +19,7 @@ public interface IEventBus
 public class EventBus : IEventBus
 {
     private readonly Dictionary<Type, Delegate> _subscribers = new Dictionary<Type, Delegate>();
+
     public void Subscribe<T>(Action<T> onEvent)
     {
         var type = typeof(T);

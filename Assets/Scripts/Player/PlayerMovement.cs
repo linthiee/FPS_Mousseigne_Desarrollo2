@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundDistance = 0.4f; 
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float jumpHeight = 1.5f;  
+    [SerializeField] private Transform playerCamera;
     
     private IEventBus _eventBus;
     private bool isGrounded;
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 cameraSensitivity = new Vector2(0.2f, 0.2f);
     private Vector2 look;
     private float yaw;
+    private float pitch;
     
     private void OnEnable()
     {
@@ -40,18 +42,22 @@ public class PlayerMovement : MonoBehaviour
         _eventBus = ServiceLocator.GetService<IEventBus>();
         actions = new InputSystem_Actions();
         yaw = transform.eulerAngles.y;
+        pitch = 0f;
     }
 
     public void Start()
     {
         Cursor.visible = false;
-        _eventBus.Subscribe<PlayerRechargeEvent>(OnPlayerRecharge);
+        Cursor.lockState = CursorLockMode.Locked;
     }
     
     public void LateUpdate()
     {
         look = actions.Player.Look.ReadValue<Vector2>();
         yaw += look.x * cameraSensitivity.x;
+        pitch -= look.y * cameraSensitivity.y;
+        
+        pitch = Mathf.Clamp(pitch, -90f, 90f);
     }
     
     public void FixedUpdate()
@@ -73,7 +79,6 @@ public class PlayerMovement : MonoBehaviour
     private void OnDestroy()
     {
         actions.Dispose();
-        _eventBus.Unsubscribe<PlayerRechargeEvent>(OnPlayerRecharge);
     }
     
     private void DoJump(InputAction.CallbackContext value)
@@ -113,11 +118,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCameraRotate()
     {
-        Quaternion targetRotation = Quaternion.Euler(0f, yaw, 0f);
-        rb.MoveRotation(targetRotation);
-    }
-
-    private void OnPlayerRecharge(PlayerRechargeEvent eventData)
-    {
+        Quaternion bodyRotation = Quaternion.Euler(0f, yaw, 0f);
+        rb.MoveRotation(bodyRotation);
+        
+        if (playerCamera != null)
+        {
+            playerCamera.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        }
     }
 }
