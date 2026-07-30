@@ -19,15 +19,6 @@ public class PlayerController : MonoBehaviour
         _eventBus = ServiceLocator.GetService<IEventBus>();
         actions = new InputSystem_Actions();
     }
-
-    public void Start()
-    {
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     
     private void OnDisable()
     {
