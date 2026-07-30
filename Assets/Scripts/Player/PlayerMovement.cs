@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private float velocity = 5.0f;
 
     [Header("Jump Stats")] private float gravity = -9.81f;
-    private float verticalVelocity = 0f;
+    private float verticalVelocity = 0f; 
 
     [Header("Camera")] public Vector2 cameraSensitivity = new Vector2(0.2f, 0.2f);
     private Vector2 look;
