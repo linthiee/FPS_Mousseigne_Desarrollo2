@@ -3,21 +3,27 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    [SerializeField] Camera playerCamera;
+    [Header("References")]
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private Animator gunAnimator;
+
+    [Header("Weapon Stats")]
+    [SerializeField] private int maxBullets = 17;
+    [SerializeField] private float fireRate = 5f;
+
+    [Header("Effects")] [SerializeField] private ParticleSystem muzzleFlash;
 
     private IEventBus _eventBus;
-    private RaycastHit hit;
-
-    private int maxBullets = 17;
     private int currentBullets;
 
-    private bool canShoot = false;
-    private bool wantsToShoot = false;
+    private float nextTimeToFire = 0f;
+    private bool isTriggerPulled = false;
+
+    private readonly int fireHash = Animator.StringToHash("Fire");
 
     void Awake()
     {
         _eventBus = ServiceLocator.GetService<IEventBus>();
-
         _eventBus.Subscribe<PlayerShootEvent>(OnPlayerShoot);
         _eventBus.Subscribe<PlayerRechargeEvent>(OnPlayerRecharge);
     }
@@ -27,32 +33,58 @@ public class WeaponController : MonoBehaviour
         currentBullets = maxBullets;
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        Debug.DrawLine(playerCamera.transform.position, playerCamera.transform.position + playerCamera.transform.forward * 10f, Color.red);
-        
-        if (canShoot && wantsToShoot)
-        {
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit,
-                    Mathf.Infinity, LayerMask.GetMask("Wall")))
-            {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance,
-                    Color.yellow);
-                Debug.Log("Wall!");
-            }
-            else
-            {
-                Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * 1000f, Color.tomato,
-                    2.0f, false);
-            }
+        Debug.DrawLine(playerCamera.transform.position,
+            playerCamera.transform.position + playerCamera.transform.forward * 10f, Color.red);
 
-            wantsToShoot = false;
+        if (isTriggerPulled && currentBullets > 0 && Time.time >= nextTimeToFire)
+        {
+            nextTimeToFire = Time.time + 1f / fireRate;
+            ExecuteShoot();
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void ExecuteShoot()
     {
+        currentBullets--;
+        Debug.Log(currentBullets);
+        
+        if (gunAnimator != null)
+        {
+            gunAnimator.CrossFade(fireHash, 0.05f, 0, 0f);
+        }
+
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Play();
+        }
+
+        RaycastHit hit;
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, Mathf.Infinity,
+                LayerMask.GetMask("Enemy")))
+        {
+            Enemy enemyHit = hit.collider.GetComponent<Enemy>();
+
+            if (enemyHit != null)
+            {
+                enemyHit.TakeDamage(20);
+                Debug.Log($"You hit {enemyHit.gameObject.name}!");
+            }
+
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance,
+                Color.yellow, 2.0f);
+        }
+        else
+        {
+            Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward * 1000f, Color.tomato, 2.0f,
+                false);
+        }
+
+        if (currentBullets <= 0)
+        {
+            isTriggerPulled = false;
+        }
     }
 
     private void OnDestroy()
@@ -63,18 +95,7 @@ public class WeaponController : MonoBehaviour
 
     private void OnPlayerShoot(PlayerShootEvent eventData)
     {
-        if (currentBullets > 0)
-        {
-            Debug.Log(currentBullets);
-            currentBullets--;
-            canShoot = true;
-            wantsToShoot = true;
-        }
-        else
-        {
-            canShoot = false;
-            wantsToShoot = true;
-        }
+        isTriggerPulled = eventData.isShooting;
     }
 
     private void OnPlayerRecharge(PlayerRechargeEvent eventData)
@@ -82,9 +103,10 @@ public class WeaponController : MonoBehaviour
         if (currentBullets < maxBullets)
         {
             currentBullets = maxBullets;
-            Debug.Log("recargando");
         }
         else
+        {
             Debug.Log("capped");
+        }
     }
 }

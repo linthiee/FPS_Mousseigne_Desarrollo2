@@ -7,6 +7,7 @@ public struct PlayerRechargeEvent
 
 public struct PlayerShootEvent
 {
+    public bool isShooting;
 }
 
 public interface IEventBus

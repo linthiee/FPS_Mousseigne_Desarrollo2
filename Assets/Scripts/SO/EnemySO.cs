@@ -11,4 +11,7 @@ public class EnemySO : ScriptableObject
     public float damage;
     public float attackRange;
     public float attackCooldown;
+    
+    [Header("Health")]
+    public int maxHealth;
 }

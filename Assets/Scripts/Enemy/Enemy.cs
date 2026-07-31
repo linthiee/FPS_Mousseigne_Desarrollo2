@@ -12,7 +12,8 @@ public abstract class Enemy : MonoBehaviour
     protected IAttackStrategy attackStrategy;
 
     protected IEnemyState currentState; 
-
+    protected float currentHealth; 
+    
     protected virtual void Awake()
     {
         Debug.Log("me desperte");
@@ -27,6 +28,7 @@ public abstract class Enemy : MonoBehaviour
         
         agent.speed = stats.moveSpeed;
         agent.stoppingDistance = stats.stoppingDistance;
+        currentHealth = stats.maxHealth;
         
         SetInitialStrategy();
     }
@@ -46,6 +48,17 @@ public abstract class Enemy : MonoBehaviour
 
     protected abstract void SetInitialStrategy();
 
+    public void TakeDamage(float damageAmount)
+    {
+        currentHealth -= damageAmount;
+        Debug.Log($"currentHealth");
+
+        if (currentHealth <= 0)
+        {
+            //enemy.ChangeState(new DeadState(this))
+        }
+    }
+    
     public void PerformAttack()
     {
         if (attackStrategy != null)
