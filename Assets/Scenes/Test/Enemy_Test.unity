@@ -254,6 +254,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2455487609237512565, guid: 1ad83e58e7f5daa4ebcd68f6d0ecddc9, type: 3}
+      propertyPath: gunAnimator
+      value: 
+      objectReference: {fileID: 2091537808}
     - target: {fileID: 3945839834600848237, guid: 1ad83e58e7f5daa4ebcd68f6d0ecddc9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 542.98456
@@ -707,6 +711,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39f354b8bf9472b40a25eac78dff1b76, type: 3}
+--- !u!95 &2091537808 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2279367696771432549, guid: 1ad83e58e7f5daa4ebcd68f6d0ecddc9, type: 3}
+  m_PrefabInstance: {fileID: 952776655}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
