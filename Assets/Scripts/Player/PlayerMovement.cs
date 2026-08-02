@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")] 
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] public Rigidbody rb;
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundDistance = 0.4f;
@@ -21,6 +21,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float walkSpeed = 3.0f;
     [SerializeField] private float runSpeed = 6.0f;
     
+    public Animator anim;
+    
+    protected IPlayerState currentState; 
+    
     private bool isGrounded;
     private float stepTimer = 0f;
     private bool isRunning;
@@ -28,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     private InputSystem_Actions actions;
 
     [Header("Movement")] private Vector3 movementInput;
+    public Vector3 MovementInput => movementInput;
     private float velocity = 3.0f;
 
     [Header("Jump Stats")] private float gravity = -9.81f;
@@ -54,6 +59,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void Start()
     {
+        ChangeState(new PlayerIdleState(this));
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -63,6 +70,11 @@ public class PlayerMovement : MonoBehaviour
         isRunning = actions.Player.Sprint.IsPressed();
         
         HandleFootsteps();
+        
+        if (currentState != null)
+        {
+            currentState.UpdateState();
+        }
     }
     
     public void LateUpdate()
@@ -94,7 +106,18 @@ public class PlayerMovement : MonoBehaviour
     {
         actions.Dispose();
     }
+    
+    public void ChangeState(IPlayerState newState)
+    {
+        if (currentState != null)
+        {
+            currentState.Exit();
+        }
 
+        currentState = newState;
+        currentState.Enter();
+    }
+    
     private void HandleFootsteps()
     {
         bool isMoving = rb.linearVelocity.magnitude > 0.1f; 
@@ -118,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
     
     private void PlayRandomFootstep()
     {
-        int randomIndex = Random.Range(0, footstepClips.Length - 1);
+        int randomIndex = Random.Range(0, footstepClips.Length);
         AudioClip clipToPlay = footstepClips[randomIndex];
 
         footstepSource.pitch = Random.Range(0.9f, 1.0f);

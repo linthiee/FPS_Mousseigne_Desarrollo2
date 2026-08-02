@@ -10,7 +10,7 @@ public static class GlobalBootstrapper
         IEventBus globalEventBus = new EventBus();
         ServiceLocator.AddService<IEventBus>(globalEventBus);
 
-        //AudioSettingsSO audioSettings = Resources.Load<AudioSettingsSO>("AudioSettings");
+        AudioSettingsSO audioSettings = Resources.Load<AudioSettingsSO>("AudioSettings");
 
         Debug.Log("Initialized global services");
 
