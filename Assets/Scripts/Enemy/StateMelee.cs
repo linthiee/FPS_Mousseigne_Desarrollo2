@@ -1,3 +1,4 @@
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public interface IEnemyState
@@ -20,6 +21,7 @@ public class ChaseState : IEnemyState
 
     public void Enter()
     {
+        enemy.audioSource.Play();
         enemy.anim.CrossFade(walkHash, 0.2f); 
     }
 
@@ -36,7 +38,7 @@ public class ChaseState : IEnemyState
 
     public void Exit()
     {
-        
+        enemy.audioSource.Stop();
     }
 }
 
@@ -69,6 +71,7 @@ public class AttackState : IEnemyState
         int randomAttack = attackHashes[randomIndex];
 
         enemy.anim.CrossFade(randomAttack, 0.1f);
+        enemy.audioSource.PlayOneShot(enemy.stats.attack);
 
         attackTimer = enemy.GetStats().attackCooldown;
         isWaiting = false;

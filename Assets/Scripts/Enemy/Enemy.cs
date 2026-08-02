@@ -3,7 +3,9 @@ using UnityEngine.AI;
 
 public abstract class Enemy : MonoBehaviour
 {
-    [SerializeField] protected EnemySO stats; 
+    [SerializeField] public EnemySO stats; 
+    
+    [SerializeField] public AudioSource audioSource;
     
     public NavMeshAgent agent;
     public Animator anim;

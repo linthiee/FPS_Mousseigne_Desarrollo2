@@ -14,4 +14,9 @@ public class EnemySO : ScriptableObject
     
     [Header("Health")]
     public int maxHealth;
+    
+    [Header("Audio")]
+    public AudioClip walk;
+    public AudioClip attack;
+    public AudioClip dead;
 }
