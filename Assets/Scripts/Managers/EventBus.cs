@@ -10,6 +10,34 @@ public struct PlayerShootEvent
     public bool isShooting;
 }
 
+public struct PlayGameEvent
+{
+}
+
+public struct ExitToMenuEvent
+{
+}
+
+public struct EndGameEvent
+{
+}
+
+public struct ExitFromMenuEvent
+{
+}
+    
+public struct GameWonEvent 
+{ 
+}
+   
+public struct PlayerDeathEvent 
+{ 
+}
+   
+public struct TakeDmgEvent 
+{ 
+}
+
 public interface IEventBus
 {
     void Subscribe<T>(Action<T> onEvent);
