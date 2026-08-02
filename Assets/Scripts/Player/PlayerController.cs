@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip breathing;
+    
     private IEventBus _eventBus;
     private InputSystem_Actions actions;
     
@@ -20,6 +23,14 @@ public class PlayerController : MonoBehaviour
     {
         _eventBus = ServiceLocator.GetService<IEventBus>();
         actions = new InputSystem_Actions();
+    }
+
+    public void Start()
+    {
+        if  (!GetComponent<AudioSource>().isPlaying)
+        {
+            GetComponent<AudioSource>().PlayOneShot(breathing);
+        }
     }
     
     private void OnDisable()

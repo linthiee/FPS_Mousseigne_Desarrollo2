@@ -3,21 +3,32 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("References")] [SerializeField]
-    private Rigidbody rb;
+    [Header("References")] 
+    [SerializeField] private Rigidbody rb;
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundDistance = 0.4f;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private float jumpHeight = 1.4f;
     [SerializeField] private Transform playerCamera;
+    [SerializeField] private AudioSource footstepSource;
+    
+    [SerializeField] private AudioClip[] footstepClips; 
 
+    [SerializeField] private float walkStepInterval = 0.5f; 
+    [SerializeField] private float runStepInterval = 0.3f;
+    
+    [SerializeField] private float walkSpeed = 3.0f;
+    [SerializeField] private float runSpeed = 6.0f;
+    
     private bool isGrounded;
-
+    private float stepTimer = 0f;
+    private bool isRunning;
+    
     private InputSystem_Actions actions;
 
     [Header("Movement")] private Vector3 movementInput;
-    private float velocity = 5.0f;
+    private float velocity = 3.0f;
 
     [Header("Jump Stats")] private float gravity = -9.81f;
     private float verticalVelocity = 0f; 
@@ -47,6 +58,13 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    public void Update()
+    {
+        isRunning = actions.Player.Sprint.IsPressed();
+        
+        HandleFootsteps();
+    }
+    
     public void LateUpdate()
     {
         look = actions.Player.Look.ReadValue<Vector2>();
@@ -77,6 +95,37 @@ public class PlayerMovement : MonoBehaviour
         actions.Dispose();
     }
 
+    private void HandleFootsteps()
+    {
+        bool isMoving = rb.linearVelocity.magnitude > 0.1f; 
+
+        if (isMoving)
+        {
+            stepTimer -= Time.deltaTime;
+
+            if (stepTimer <= 0f)
+            {
+                PlayRandomFootstep();
+
+                stepTimer = isRunning ? runStepInterval : walkStepInterval;
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
+        }
+    }
+    
+    private void PlayRandomFootstep()
+    {
+        int randomIndex = Random.Range(0, footstepClips.Length - 1);
+        AudioClip clipToPlay = footstepClips[randomIndex];
+
+        footstepSource.pitch = Random.Range(0.9f, 1.0f);
+
+        footstepSource.PlayOneShot(clipToPlay);
+    }
+    
     private void DoJump(InputAction.CallbackContext value)
     {
         if (value.performed && isGrounded)
@@ -96,8 +145,9 @@ public class PlayerMovement : MonoBehaviour
             movementInput.y = verticalVelocity;
             verticalVelocity = 0.0f;
         }
-
-        rb.AddRelativeForce(movementInput * velocity, ForceMode.VelocityChange);
+        
+        float currentSpeed = isRunning ? runSpeed : walkSpeed;
+        rb.AddRelativeForce(movementInput * currentSpeed, ForceMode.VelocityChange);
     }
 
     private void HandleCameraRotate()

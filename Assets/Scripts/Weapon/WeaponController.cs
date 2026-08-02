@@ -15,6 +15,10 @@ public class WeaponController : MonoBehaviour
 
     [Header("Effects")] [SerializeField] private ParticleSystem muzzleFlash;
 
+    [SerializeField] private AudioSource audioSource; 
+    [SerializeField] private AudioClip gunshot; 
+    [SerializeField] private AudioClip reload; 
+
     private IEventBus _eventBus;
     private int currentBullets;
 
@@ -22,7 +26,7 @@ public class WeaponController : MonoBehaviour
     private bool isTriggerPulled = false;
 
     private readonly int fireHash = Animator.StringToHash("Fire");
-
+    
     void Awake()
     {
         _eventBus = ServiceLocator.GetService<IEventBus>();
@@ -54,6 +58,7 @@ public class WeaponController : MonoBehaviour
 
         if (gunAnimator != null)
         {
+            audioSource.PlayOneShot(gunshot);
             gunAnimator.CrossFade(fireHash, 0.05f, 0, 0f);
         }
 
@@ -106,6 +111,7 @@ public class WeaponController : MonoBehaviour
     {
         if (currentBullets < maxBullets)
         {
+            audioSource.PlayOneShot(reload);
             currentBullets = maxBullets;
         }
         else
