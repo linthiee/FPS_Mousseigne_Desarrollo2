@@ -49,7 +49,7 @@ public class PlayerWalkState : IPlayerState
 
     public void Enter()
     {
-        player.anim.CrossFade(walkHash, 0.2f); 
+        player.anim.CrossFade(walkHash, 0.1f); 
     }
 
     public void UpdateState()

@@ -18,6 +18,7 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private AudioSource audioSource; 
     [SerializeField] private AudioClip gunshot; 
     [SerializeField] private AudioClip reload; 
+    [SerializeField] private AudioClip emptyMag; 
 
     private IEventBus _eventBus;
     private int currentBullets;
@@ -44,10 +45,17 @@ public class WeaponController : MonoBehaviour
         Debug.DrawLine(playerCamera.transform.position,
             playerCamera.transform.position + playerCamera.transform.forward * 10f, Color.red);
 
-        if (isTriggerPulled && currentBullets > 0 && Time.time >= nextTimeToFire)
+        if (isTriggerPulled && Time.time >= nextTimeToFire)
         {
             nextTimeToFire = Time.time + 1f / fireRate;
-            ExecuteShoot();
+            if (currentBullets > 0)
+            {
+                ExecuteShoot();
+            }
+            else
+            {
+                audioSource.PlayOneShot(emptyMag);
+            }
         }
     }
 
