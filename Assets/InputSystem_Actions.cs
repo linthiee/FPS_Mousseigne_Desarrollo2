@@ -190,6 +190,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Not Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4237a71-6564-466d-b48e-a839f2b107b0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -597,6 +606,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Recharge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8f98f56-8687-448e-9f2b-95368d9030ec"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Not Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1211,6 +1231,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_Recharge = m_Player.FindAction("Recharge", throwIfNotFound: true);
+        m_Player_NotShoot = m_Player.FindAction("Not Shoot", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1315,6 +1336,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_Recharge;
+    private readonly InputAction m_Player_NotShoot;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1370,6 +1392,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Recharge".
         /// </summary>
         public InputAction @Recharge => m_Wrapper.m_Player_Recharge;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/NotShoot".
+        /// </summary>
+        public InputAction @NotShoot => m_Wrapper.m_Player_NotShoot;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1429,6 +1455,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Recharge.started += instance.OnRecharge;
             @Recharge.performed += instance.OnRecharge;
             @Recharge.canceled += instance.OnRecharge;
+            @NotShoot.started += instance.OnNotShoot;
+            @NotShoot.performed += instance.OnNotShoot;
+            @NotShoot.canceled += instance.OnNotShoot;
         }
 
         /// <summary>
@@ -1473,6 +1502,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Recharge.started -= instance.OnRecharge;
             @Recharge.performed -= instance.OnRecharge;
             @Recharge.canceled -= instance.OnRecharge;
+            @NotShoot.started -= instance.OnNotShoot;
+            @NotShoot.performed -= instance.OnNotShoot;
+            @NotShoot.canceled -= instance.OnNotShoot;
         }
 
         /// <summary>
@@ -1863,6 +1895,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRecharge(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Not Shoot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNotShoot(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

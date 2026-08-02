@@ -8,6 +8,11 @@ public struct PlayerRechargeEvent
 public struct PlayerShootEvent
 {
     public bool isShooting;
+
+    public PlayerShootEvent(bool shooting)
+    {
+        isShooting = shooting;
+    }
 }
 
 public struct PlayGameEvent
@@ -25,17 +30,17 @@ public struct EndGameEvent
 public struct ExitFromMenuEvent
 {
 }
-    
-public struct GameWonEvent 
-{ 
+
+public struct GameWonEvent
+{
 }
-   
-public struct PlayerDeathEvent 
-{ 
+
+public struct PlayerDeathEvent
+{
 }
-   
-public struct TakeDmgEvent 
-{ 
+
+public struct TakeDmgEvent
+{
 }
 
 public interface IEventBus

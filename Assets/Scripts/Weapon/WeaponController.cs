@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Camera playerCamera;
+    [Header("References")] [SerializeField]
+    private Camera playerCamera;
+
     [SerializeField] private Animator gunAnimator;
 
-    [Header("Weapon Stats")]
-    [SerializeField] private int maxBullets = 17;
+    [Header("Weapon Stats")] [SerializeField]
+    private int maxBullets = 17;
+
     [SerializeField] private float fireRate = 5f;
 
     [Header("Effects")] [SerializeField] private ParticleSystem muzzleFlash;
@@ -49,7 +51,7 @@ public class WeaponController : MonoBehaviour
     {
         currentBullets--;
         Debug.Log(currentBullets);
-        
+
         if (gunAnimator != null)
         {
             gunAnimator.CrossFade(fireHash, 0.05f, 0, 0f);
@@ -57,7 +59,8 @@ public class WeaponController : MonoBehaviour
 
         if (muzzleFlash != null)
         {
-            muzzleFlash.Play();
+            muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            muzzleFlash.Play(true);
         }
 
         RaycastHit hit;
@@ -96,6 +99,7 @@ public class WeaponController : MonoBehaviour
     private void OnPlayerShoot(PlayerShootEvent eventData)
     {
         isTriggerPulled = eventData.isShooting;
+        Debug.Log(isTriggerPulled);
     }
 
     private void OnPlayerRecharge(PlayerRechargeEvent eventData)
