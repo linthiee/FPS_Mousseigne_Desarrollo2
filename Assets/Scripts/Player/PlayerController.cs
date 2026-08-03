@@ -77,6 +77,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void DoShoot(InputAction.CallbackContext value)
     {
+        if (Time.timeScale <= 0f) 
+            return;
+        
         Debug.Log("llamando a shoot event");
         _eventBus.Publish(new PlayerShootEvent(true));
     }
