@@ -26,6 +26,8 @@ public class WeaponController : MonoBehaviour
     private float nextTimeToFire = 0f;
     private bool isTriggerPulled = false;
 
+    private int damage = 20;
+    
     private readonly int fireHash = Animator.StringToHash("Fire");
     
     void Awake()
@@ -84,8 +86,7 @@ public class WeaponController : MonoBehaviour
 
             if (enemyHit != null)
             {
-                enemyHit.TakeDamage(20);
-                Debug.Log($"You hit {enemyHit.gameObject.name}!");
+                enemyHit.TakeDamage(damage);
             }
 
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance,
