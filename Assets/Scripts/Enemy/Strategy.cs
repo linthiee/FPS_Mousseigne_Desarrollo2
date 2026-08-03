@@ -22,7 +22,12 @@ public class SniperAttackStrategy : IAttackStrategy
 {
     public void ExecuteAttack(Transform attacker, Transform player, float damage)
     {
-        Debug.Log("sniper");
+        IDamageable target = player.GetComponent<IDamageable>();
+        
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+        }    
     }
 }
 
@@ -30,6 +35,10 @@ public class FastCloseShootStrategy : IAttackStrategy
 {
     public void ExecuteAttack(Transform attacker, Transform player, float damage)
     {
-        Debug.Log("close");
-    }
+        IDamageable target = player.GetComponent<IDamageable>();
+        
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+        }        }
 }

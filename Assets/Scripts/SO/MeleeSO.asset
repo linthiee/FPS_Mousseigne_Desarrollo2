@@ -18,6 +18,10 @@ MonoBehaviour:
   damage: 20
   attackRange: 2
   attackCooldown: 1.5
+  attackAnimations:
+  - Attack(1)
+  - Attack(2)
+  - Attack(3)
   maxHealth: 100
   walk: {fileID: 8300000, guid: 7d09d0cec6397aa46967c0faf2404789, type: 3}
   attack: {fileID: 8300000, guid: 9aa0c5be62803ad46b2b0a7000243fef, type: 3}

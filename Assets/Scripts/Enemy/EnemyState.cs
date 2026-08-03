@@ -75,9 +75,6 @@ public class HitState : IEnemyState
 
         hitTimer -= Time.deltaTime;
         
-        if (audioCooldown > 0f)
-            audioCooldown -= Time.deltaTime;
-        
         if (hitTimer <= 0f && audioCooldown <= 0f)
         {
             enemy.audioSource.PlayOneShot(enemy.GetStats().hit);
@@ -141,12 +138,7 @@ public class AttackState : IEnemyState
     private Enemy enemy;
     private float attackTimer;
 
-    private readonly int[] attackHashes = new int[]
-    {
-        Animator.StringToHash("Attack(1)"),
-        Animator.StringToHash("Attack(2)"),
-        Animator.StringToHash("Attack(3)")
-    };
+    private int[] attackHashes;
 
     private readonly int idleHash = Animator.StringToHash("Idle");
 
@@ -155,6 +147,14 @@ public class AttackState : IEnemyState
     public AttackState(Enemy enemy)
     {
         this.enemy = enemy;
+        
+        string[] animNames = enemy.GetStats().attackAnimations;
+        attackHashes = new int[animNames.Length];
+        
+        for (int i = 0; i < animNames.Length; i++)
+        {
+            attackHashes[i] = Animator.StringToHash(animNames[i]);
+        }
     }
 
     public void Enter()
