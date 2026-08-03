@@ -42,6 +42,9 @@ public struct PlayerDeathEvent
 public struct TakeDmgEvent
 {
 }
+public struct EnemyDeathEvent
+{
+}
 
 public interface IEventBus
 {

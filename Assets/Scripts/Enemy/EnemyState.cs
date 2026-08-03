@@ -122,6 +122,8 @@ public class DeadState : IEnemyState
         enemy.audioSource.PlayOneShot(enemy.GetStats().dead);
         enemy.anim.CrossFade(deadHash, 0.2f);
         enemy.isDead = true;
+        
+        ServiceLocator.GetService<IEventBus>().Publish(new EnemyDeathEvent());
     }
 
     public void UpdateState()

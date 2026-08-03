@@ -154,6 +154,7 @@ MonoBehaviour:
   currentLevelInfo: {fileID: 11400000, guid: 3081fb655ff49874483879c7d6a427f4, type: 2}
   spawnPoints:
   - {fileID: 1253102150}
+  - {fileID: 1253102150}
   - {fileID: 1486546146}
   - {fileID: 431998052}
   - {fileID: 455782994}

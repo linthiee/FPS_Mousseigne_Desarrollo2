@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints; 
   
     private IEventBus _eventBus;
+    private int enemiesRemaining = 0;
     
     private void Start()
     {
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
         _eventBus.Subscribe<EndGameEvent>(OnGameEnd);
         _eventBus.Subscribe<PlayerDeathEvent>(OnPlayerDeath);
         _eventBus.Subscribe<GameWonEvent>(OnGameWon);
+        _eventBus.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
         
         SpawnEnemies();
         
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
             _eventBus.Unsubscribe<EndGameEvent>(OnGameEnd);
             _eventBus.Unsubscribe<PlayerDeathEvent>(OnPlayerDeath);
             _eventBus.Unsubscribe<GameWonEvent>(OnGameWon);
+            _eventBus.Unsubscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
         Application.wantsToQuit -= WantsToQuit;
     }
@@ -43,12 +46,24 @@ public class GameManager : MonoBehaviour
     {
         foreach (EnemySpawnConfig config in currentLevelInfo.enemiesToSpawn)
         {
+            enemiesRemaining += config.spawnCount;
+            
             for (int i = 0; i < config.spawnCount; i++)
             {
                 Transform randomSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
                 
                 Instantiate(config.enemyPrefab, randomSpawnPoint.position, randomSpawnPoint.rotation);
             }
+        }
+    }
+    
+    private void OnEnemyDeath(EnemyDeathEvent eventData)
+    {
+        enemiesRemaining--;
+
+        if (enemiesRemaining <= 0)
+        {
+            _eventBus.Publish(new GameWonEvent());
         }
     }
     
@@ -73,8 +88,12 @@ public class GameManager : MonoBehaviour
     
     private void OnGameWon(GameWonEvent eventData)
     {
-        Time.timeScale = 0f;
         victoryPanel.SetActive(true);
+        
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        Time.timeScale = 0f; 
     }
     
     private void OnBackToMenu(ExitToMenuEvent eventData)
