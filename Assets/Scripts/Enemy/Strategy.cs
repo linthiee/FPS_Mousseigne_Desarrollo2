@@ -40,5 +40,6 @@ public class FastCloseShootStrategy : IAttackStrategy
         if (target != null)
         {
             target.TakeDamage(damage);
-        }        }
+        }
+    }
 }
