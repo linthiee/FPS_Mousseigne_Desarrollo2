@@ -23,13 +23,14 @@ public class PlayerMovement : MonoBehaviour
     
     public Animator anim;
     
-    protected IPlayerState currentState; 
+    protected IPlayerState currentState;
     
     private bool isGrounded;
     private float stepTimer = 0f;
     private bool isRunning;
     
     private InputSystem_Actions actions;
+    private IEventBus _eventBus;
 
     [Header("Movement")] private Vector3 movementInput;
     public Vector3 MovementInput => movementInput;
@@ -52,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void Awake()
     {
+        _eventBus = ServiceLocator.GetService<IEventBus>();
+        
         actions = new InputSystem_Actions();
         yaw = transform.eulerAngles.y;
         pitch = 0f;
@@ -60,7 +63,8 @@ public class PlayerMovement : MonoBehaviour
     public void Start()
     {
         ChangeState(new PlayerIdleState(this));
-
+        _eventBus.Subscribe<PlayerDeathEvent>(OnPlayerDeath);
+        
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -104,7 +108,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnDestroy()
     {
+        _eventBus.Unsubscribe<PlayerDeathEvent>(OnPlayerDeath);
         actions.Dispose();
+    }
+    
+    private void OnPlayerDeath(PlayerDeathEvent deathEvent)
+    {
+        rb.linearVelocity = Vector3.zero;
+        movementInput = Vector3.zero;
+        
+        ChangeState(new PlayerDeathState(this));
     }
     
     public void ChangeState(IPlayerState newState)

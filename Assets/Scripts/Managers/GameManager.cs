@@ -1,7 +1,6 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
-using static EventBus;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,12 +34,24 @@ public class GameManager : MonoBehaviour
         Application.wantsToQuit -= WantsToQuit;
     }
 
+    
     private void OnPlayerDeath(PlayerDeathEvent eventData)
     {
-        Time.timeScale = 0f;
-        audioMixer.SetFloat("VFXVolume", -80f);
+        StartCoroutine(GameOverSequence());
+    }
+
+    private IEnumerator GameOverSequence()
+    {
+        yield return new WaitForSeconds(2.5f);
 
         defeatPanel.SetActive(true);
+        
+        audioMixer.SetFloat("VFXVolume", -80f);
+        
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        Time.timeScale = 0f; 
     } 
     
     private void OnGameWon(GameWonEvent eventData)

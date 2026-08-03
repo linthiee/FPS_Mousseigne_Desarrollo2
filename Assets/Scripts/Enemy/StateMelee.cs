@@ -11,7 +11,7 @@ public interface IEnemyState
 public class ChaseState : IEnemyState
 {
     private Enemy enemy;
-    
+
     private readonly int walkHash = Animator.StringToHash("Walk");
 
     public ChaseState(Enemy enemy)
@@ -22,7 +22,7 @@ public class ChaseState : IEnemyState
     public void Enter()
     {
         enemy.audioSource.Play();
-        enemy.anim.CrossFade(walkHash, 0.2f); 
+        enemy.anim.CrossFade(walkHash, 0.2f);
     }
 
     public void UpdateState()
@@ -39,6 +39,100 @@ public class ChaseState : IEnemyState
     public void Exit()
     {
         enemy.audioSource.Stop();
+    }
+}
+
+public class HitState : IEnemyState
+{
+    private Enemy enemy;
+
+    private readonly int hitHash = Animator.StringToHash("Get_Hit");
+    private float hitTimer;
+
+    private float stunDuration = 0.5f;
+    private float audioCooldown;
+
+    public HitState(Enemy enemy)
+    {
+        this.enemy = enemy;
+    }
+
+    public void Enter()
+    {
+        enemy.agent.ResetPath();
+
+        enemy.anim.CrossFade(hitHash, 0.2f);
+
+        hitTimer = stunDuration;
+    }
+
+    public void UpdateState()
+    {
+        if (audioCooldown > 0f)
+        {
+            audioCooldown -= Time.deltaTime;
+        }
+
+        hitTimer -= Time.deltaTime;
+        
+        if (audioCooldown > 0f)
+            audioCooldown -= Time.deltaTime;
+        
+        if (hitTimer <= 0f && audioCooldown <= 0f)
+        {
+            enemy.audioSource.PlayOneShot(enemy.GetStats().hit);
+            audioCooldown = 0.5f;
+        }        
+        
+        if (hitTimer <= 0f)
+        {
+            float distance = Vector3.Distance(enemy.transform.position, enemy.player.position);
+
+            if (distance <= enemy.GetStats().attackRange)
+            {
+                enemy.agent.SetDestination(enemy.player.position);
+                enemy.ChangeState(new AttackState(enemy));
+            }
+            else if (distance <= enemy.GetStats().range)
+            {
+                enemy.ChangeState(new ChaseState(enemy));
+            }
+            else
+            {
+                enemy.ChangeState(new IdleState(enemy));
+            }
+        }
+    }
+
+    public void Exit()
+    {
+    }
+}
+
+public class DeadState : IEnemyState
+{
+    private Enemy enemy;
+
+    private readonly int deadHash = Animator.StringToHash("Dead");
+
+    public DeadState(Enemy enemy)
+    {
+        this.enemy = enemy;
+    }
+
+    public void Enter()
+    {
+        enemy.audioSource.PlayOneShot(enemy.GetStats().dead);
+        enemy.anim.CrossFade(deadHash, 0.2f);
+        enemy.isDead = true;
+    }
+
+    public void UpdateState()
+    {
+    }
+
+    public void Exit()
+    {
     }
 }
 
@@ -71,7 +165,7 @@ public class AttackState : IEnemyState
         int randomAttack = attackHashes[randomIndex];
 
         enemy.anim.CrossFade(randomAttack, 0.1f);
-        enemy.audioSource.PlayOneShot(enemy.stats.attack);
+        enemy.audioSource.PlayOneShot(enemy.GetStats().attack);
 
         attackTimer = enemy.GetStats().attackCooldown;
         isWaiting = false;
@@ -98,21 +192,20 @@ public class AttackState : IEnemyState
             else
             {
                 enemy.PerformAttack();
-                
+
                 int randomIndex = Random.Range(0, attackHashes.Length);
                 int randomAttack = attackHashes[randomIndex];
 
                 enemy.anim.CrossFade(randomAttack, 0.1f, -1, 0f);
                 attackTimer = enemy.GetStats().attackCooldown;
-                
+
                 isWaiting = false;
             }
         }
     }
-    
+
     public void Exit()
     {
-        
     }
 }
 
@@ -128,23 +221,22 @@ public class IdleState : IEnemyState
 
     public void Enter()
     {
-        enemy.agent.ResetPath(); 
-        
+        enemy.agent.ResetPath();
+
         enemy.anim.CrossFade(idleHash, 0.2f);
     }
 
     public void UpdateState()
     {
         float distance = Vector3.Distance(enemy.transform.position, enemy.player.position);
-        
-        if (distance <= 15f) 
+
+        if (distance <= enemy.GetStats().range)
         {
             enemy.ChangeState(new ChaseState(enemy));
         }
     }
-    
+
     public void Exit()
     {
-        
     }
 }

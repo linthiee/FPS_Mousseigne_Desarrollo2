@@ -9,7 +9,12 @@ public class MeleeAttackStrategy : IAttackStrategy
 {
     public void ExecuteAttack(Transform attacker, Transform player, float damage)
     {
-        Debug.Log("melee");
+        IDamageable target = player.GetComponent<IDamageable>();
+        
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+        }
     }
 }
 

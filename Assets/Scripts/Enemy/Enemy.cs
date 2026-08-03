@@ -1,21 +1,24 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] public EnemySO stats; 
-    
+    [SerializeField] protected EnemySO stats;
+
     [SerializeField] public AudioSource audioSource;
-    
+
     public NavMeshAgent agent;
     public Animator anim;
-    public Transform player; 
+    public Transform player;
 
     protected IAttackStrategy attackStrategy;
 
-    protected IEnemyState currentState; 
-    protected float currentHealth; 
-    
+    protected IEnemyState currentState;
+    protected float currentHealth;
+
+    public bool isDead = false;
+
     protected virtual void Awake()
     {
         Debug.Log("me desperte");
@@ -27,11 +30,11 @@ public abstract class Enemy : MonoBehaviour
             Debug.Log("chasing");
         else
             Debug.Log("NOT chasing");
-        
+
         agent.speed = stats.moveSpeed;
         agent.stoppingDistance = stats.stoppingDistance;
         currentHealth = stats.maxHealth;
-        
+
         SetInitialStrategy();
     }
 
@@ -39,33 +42,42 @@ public abstract class Enemy : MonoBehaviour
     {
         ChangeState(new IdleState(this));
     }
-    
+
     protected virtual void Update()
     {
-        if (currentState != null)
+        if (!isDead)
         {
-            currentState.UpdateState();
+            if (currentState != null)
+            {
+                currentState.UpdateState();
+            }
         }
     }
 
     protected abstract void SetInitialStrategy();
 
-    public void TakeDamage(float damageAmount)
+    public void TakeDamage(float amount)
     {
-        currentHealth -= damageAmount;
-        Debug.Log($"currentHealth");
-
-        if (currentHealth <= 0)
+        if (!isDead)
         {
-            //enemy.ChangeState(new DeadState(this))
+            currentHealth -= amount;
+            ChangeState(new HitState(this));
+
+            if (currentHealth <= 0)
+            {
+                ChangeState(new DeadState(this));
+            }
         }
     }
-    
+
     public void PerformAttack()
     {
-        if (attackStrategy != null)
+        if (!isDead)
         {
-            attackStrategy.ExecuteAttack(transform, player, stats.damage);
+            if (attackStrategy != null)
+            {
+                attackStrategy.ExecuteAttack(transform, player, stats.damage);
+            }
         }
     }
 
@@ -73,15 +85,18 @@ public abstract class Enemy : MonoBehaviour
     {
         return stats;
     }
-    
+
     public void ChangeState(IEnemyState newState)
     {
-        if (currentState != null)
+        if (!isDead)
         {
-            currentState.Exit();
-        }
+            if (currentState != null)
+            {
+                currentState.Exit();
+            }
 
-        currentState = newState;
-        currentState.Enter();
+            currentState = newState;
+            currentState.Enter();
+        }
     }
 }

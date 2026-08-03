@@ -64,3 +64,28 @@ public class PlayerWalkState : IPlayerState
     {
     }
 }
+public class PlayerDeathState : IPlayerState
+{
+    private PlayerMovement player;
+    
+    private readonly int deathHash = Animator.StringToHash("death");
+
+    public PlayerDeathState(PlayerMovement player)
+    {
+        this.player = player;
+    }
+
+    public void Enter()
+    {
+        player.anim.CrossFade(deathHash, 0.2f); 
+    }
+
+    public void UpdateState()
+    {
+ 
+    }
+
+    public void Exit()
+    {
+    }
+}
