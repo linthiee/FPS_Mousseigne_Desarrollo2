@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject defeatPanel;
     [SerializeField] GameObject victoryPanel;
     [SerializeField] UnityEngine.Audio.AudioMixer audioMixer;
-    [SerializeField] private LevelInfoSO currentLevelInfo;
+    [SerializeField] private LevelSO currentLevelInfo;
     [SerializeField] private Transform[] spawnPoints; 
   
     private IEventBus _eventBus;

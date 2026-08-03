@@ -9,8 +9,8 @@ public struct EnemySpawnConfig
     public int spawnCount;
 }
 
-[CreateAssetMenu(fileName = "LevelSO", menuName = "FPS/LevelSO")]
-public class LevelInfoSO : ScriptableObject
+[CreateAssetMenu(fileName = "LevelSO", menuName = "FPS/Level Stats")]
+public class LevelSO : ScriptableObject
 {
     public List<EnemySpawnConfig> enemiesToSpawn;
 }
