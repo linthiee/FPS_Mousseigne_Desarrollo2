@@ -7,7 +7,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject defeatPanel;
     [SerializeField] GameObject victoryPanel;
     [SerializeField] UnityEngine.Audio.AudioMixer audioMixer;
-    
+    [SerializeField] private LevelInfoSO currentLevelInfo;
+    [SerializeField] private Transform[] spawnPoints; 
+  
     private IEventBus _eventBus;
     
     private void Start()
@@ -20,6 +22,9 @@ public class GameManager : MonoBehaviour
         _eventBus.Subscribe<EndGameEvent>(OnGameEnd);
         _eventBus.Subscribe<PlayerDeathEvent>(OnPlayerDeath);
         _eventBus.Subscribe<GameWonEvent>(OnGameWon);
+        
+        SpawnEnemies();
+        
     }
 
     private void OnDestroy()
@@ -34,6 +39,18 @@ public class GameManager : MonoBehaviour
         Application.wantsToQuit -= WantsToQuit;
     }
 
+    private void SpawnEnemies()
+    {
+        foreach (EnemySpawnConfig config in currentLevelInfo.enemiesToSpawn)
+        {
+            for (int i = 0; i < config.spawnCount; i++)
+            {
+                Transform randomSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+                
+                Instantiate(config.enemyPrefab, randomSpawnPoint.position, randomSpawnPoint.rotation);
+            }
+        }
+    }
     
     private void OnPlayerDeath(PlayerDeathEvent eventData)
     {

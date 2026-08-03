@@ -21,7 +21,7 @@ MonoBehaviour:
   attackAnimations:
   - Attack(1)
   maxHealth: 100
-  walk: {fileID: 0}
-  attack: {fileID: 0}
-  hit: {fileID: 0}
-  dead: {fileID: 0}
+  walk: {fileID: 8300000, guid: c338d80c3459b004dab779053668ed6a, type: 3}
+  attack: {fileID: 8300000, guid: ac365779bd1701046834b099458b262c, type: 3}
+  hit: {fileID: 8300000, guid: 9691b17d5c5d54a429da7b40a128a51d, type: 3}
+  dead: {fileID: 8300000, guid: 60db6820963e5a44cbd1e77c727d695e, type: 3}

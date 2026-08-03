@@ -1,9 +1,16 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "LevelSO", menuName = "FPS/Level Info")]
-public class LevelSO : ScriptableObject
+[System.Serializable]
+public struct EnemySpawnConfig
 {
-    public int meleeEnemyCount;
-    public int sniperEnemyCount;
-    public int fastShooterEnemyCount;
+    public GameObject enemyPrefab;
+    
+    public int spawnCount;
+}
+
+[CreateAssetMenu(fileName = "LevelSO", menuName = "FPS/LevelSO")]
+public class LevelInfoSO : ScriptableObject
+{
+    public List<EnemySpawnConfig> enemiesToSpawn;
 }
